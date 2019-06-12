@@ -1,10 +1,7 @@
 package Weight;
 
-import DAL.DAO.IDAO;
-import DAL.DAO.ProduktBatchDAO;
-import DAL.DAO.UserDAO;
-import DAL.DTO.ProduktBatch;
-import DAL.DTO.User;
+import DAL.DAO.*;
+import DAL.DTO.*;
 import Weight.WeightConnector;
 
 import java.io.IOException;
@@ -16,6 +13,9 @@ public class WeightController {
         WeightController weightController = new WeightController();
         weightController.afvejning();
     }
+    private RaavareDAO raavareDAO = new RaavareDAO();
+    private ReceptDAO receptDAO = new ReceptDAO();
+    private ProduktBatchKompDAO produktBatchKompDAO = new ProduktBatchKompDAO();
     private UserDAO userDAO = new UserDAO();
     private ProduktBatchDAO produktBatchDAO = new ProduktBatchDAO();
     private WeightConnector v;
@@ -24,6 +24,8 @@ public class WeightController {
         v = new WeightConnector();
     }
     public void afvejning() throws IOException, SQLException, IDAO.DALException {
+        ProduktBatch produktBatch;
+        double tara;
         String input;
         boolean nextStep = false;
 
@@ -34,7 +36,7 @@ public class WeightController {
             if (user.getNavn() != null) {
                 nextStep = true;
                 input = v.commandRM20(user.getNavn(), "Er dette dit navn? y/n");
-                if (input.equals("y")) {}
+                if (input.equals("RM20 A y")) {}
                 else{nextStep=false;}
                 }
             else{v.commandRM20("Laboratørnummeret er forkert",""); }
@@ -45,16 +47,39 @@ public class WeightController {
         do {
                 input = v.commandRM20("INDTAST PRODUKTBATCHID", "");
                 int Id = inputToInt(input);
-                ProduktBatch produktBatch = produktBatchDAO.get(Id);
+                produktBatch = produktBatchDAO.get(Id);
                 if (produktBatch.getSlutDato() != null) {
                     nextStep = true;
                 }
             else{v.commandRM20("ProduktBatchet eksisterer ikke",""); }
         }while(nextStep==false);
 
+        nextStep=false;
         do{
+            input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
+            if(input.equals("RM20 A ")){
+                tara =v.commandS();
+                System.out.println(tara);
+                nextStep=true;
+            }
+        }while(nextStep=false);
 
-        }while(true);
+        nextStep=false;
+        do{
+            v.commandT();
+            nextStep=true;
+        }while(nextStep=false);
+
+        nextStep=false;
+        do{
+            Recept recept = receptDAO.get(produktBatch.getReceptId());
+            ReceptKomp[] receptKomps = recept.getIndholdsListe();
+            for(int i = 0; i<recept.getIndholdsListe().length;i++) {
+                String navn = raavareDAO.get(receptKomps[i].getRaavareId()).getNavn();
+                v.commandRM20(navn,"Skal afvejes");
+            }
+        }while(nextStep=false);
+
 
     }
     /*
