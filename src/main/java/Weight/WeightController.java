@@ -1,3 +1,7 @@
+package Weight;
+
+import Weight.WeightConnector;
+
 import java.io.IOException;
 
 public class WeightController {
