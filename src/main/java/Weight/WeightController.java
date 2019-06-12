@@ -1,16 +1,63 @@
 package Weight;
 
+import DAL.DAO.IDAO;
+import DAL.DAO.ProduktBatchDAO;
+import DAL.DAO.UserDAO;
+import DAL.DTO.ProduktBatch;
+import DAL.DTO.User;
 import Weight.WeightConnector;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class WeightController {
+
+    public static void main(String[]args) throws Exception {
+        WeightController weightController = new WeightController();
+        weightController.afvejning();
+    }
+    private UserDAO userDAO = new UserDAO();
+    private ProduktBatchDAO produktBatchDAO = new ProduktBatchDAO();
     private WeightConnector v;
 
     public WeightController() throws Exception {
         v = new WeightConnector();
     }
+    public void afvejning() throws IOException, SQLException, IDAO.DALException {
+        String input;
+        boolean nextStep = false;
 
+        do {
+            input = v.commandRM20("INDTAST ID", "");
+            int Id = inputToInt(input);
+            User user = userDAO.get(Id);
+            if (user.getNavn() != null) {
+                nextStep = true;
+                input = v.commandRM20(user.getNavn(), "Er dette dit navn? y/n");
+                if (input.equals("y")) {}
+                else{nextStep=false;}
+                }
+            else{v.commandRM20("Laboratørnummeret er forkert",""); }
+        }
+        while(nextStep==false);
+
+        nextStep=false;
+        do {
+                input = v.commandRM20("INDTAST PRODUKTBATCHID", "");
+                int Id = inputToInt(input);
+                ProduktBatch produktBatch = produktBatchDAO.get(Id);
+                if (produktBatch.getSlutDato() != null) {
+                    nextStep = true;
+                }
+            else{v.commandRM20("ProduktBatchet eksisterer ikke",""); }
+        }while(nextStep==false);
+
+        do{
+
+        }while(true);
+
+    }
+    /*
     public void testProcedure() throws IOException {
         String userInput;
         // Trin 1: Vægten beder om, at der indtastes operatørnummer
@@ -26,8 +73,7 @@ public class WeightController {
 
         // Trin 5 & 6: Vægten beder om, at der indtastes batch nummer (område 1000-9999)
         do {
-            userInput = v.commandRM20("INDTAST BATCH-NUMMER", "1000-9999");
-        } while (!inputEquals(userInput, 1234));
+c        } while (!inputEquals(userInput, 1234));
 
         // Trin 7 & 8: Operatøren instrueres om, at vægten skal være ubelastet
         // Trin 9: Vægten tareres
@@ -64,12 +110,10 @@ public class WeightController {
         // Trin 23: Vægten tareres
         v.commandT();
     }
-
-    private boolean inputEquals(String input, String match){
-        return input.equalsIgnoreCase("RM20 A \"" + match +"\"");
-    }
-
-    private boolean inputEquals(String input, int match){
-        return input.equalsIgnoreCase("RM20 A \"" + match +"\"");
+     */
+    private int inputToInt(String input){
+        int num;
+        num = Integer.valueOf(input.replace("RM20 A ", ""));
+        return num;
     }
 }
