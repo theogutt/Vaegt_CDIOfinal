@@ -13,6 +13,7 @@ public class WeightController {
         WeightController weightController = new WeightController();
         weightController.afvejning();
     }
+    private RaavareBatchDAO raavareBatchDAO = new RaavareBatchDAO();
     private RaavareDAO raavareDAO = new RaavareDAO();
     private ReceptDAO receptDAO = new ReceptDAO();
     private ProduktBatchKompDAO produktBatchKompDAO = new ProduktBatchKompDAO();
@@ -24,20 +25,25 @@ public class WeightController {
         v = new WeightConnector();
     }
     public void afvejning() throws IOException, SQLException, IDAO.DALException {
+        RaavareBatch raavareBatch;
+        ProduktBatchKomp produktBatchKomp;
         ProduktBatch produktBatch;
-        double tara;
+        User user;
+        double maengde;
+        double tara = 0;
         String input;
         boolean nextStep = false;
 
         do {
             input = v.commandRM20("INDTAST ID", "");
             int Id = inputToInt(input);
-            User user = userDAO.get(Id);
+            user = userDAO.get(Id);
             if (user.getNavn() != null) {
                 nextStep = true;
                 input = v.commandRM20(user.getNavn(), "Er dette dit navn? y/n");
                 if (input.equals("RM20 A y")) {}
-                else{nextStep=false;}
+                else{v.commandRM20("Prøv igen","");
+                    nextStep=false;}
                 }
             else{v.commandRM20("Laboratørnummeret er forkert",""); }
         }
@@ -53,6 +59,17 @@ public class WeightController {
                 }
             else{v.commandRM20("ProduktBatchet eksisterer ikke",""); }
         }while(nextStep==false);
+
+        nextStep=false;
+        do {
+            int Id = inputToInt(input);
+            produktBatch = produktBatchDAO.get(Id);
+            Recept recept = receptDAO.get(produktBatch.getReceptId());
+            v.commandRM20(recept.getNavn()," Skal produceres");
+            produktBatch.setBatchStatus(2);//går ud fra 2 er under produktion
+            nextStep=true;
+        }while(nextStep==false);
+
 
         nextStep=false;
         do{
@@ -77,7 +94,31 @@ public class WeightController {
             for(int i = 0; i<recept.getIndholdsListe().length;i++) {
                 String navn = raavareDAO.get(receptKomps[i].getRaavareId()).getNavn();
                 v.commandRM20(navn,"Skal afvejes");
+                input = v.commandRM20("Indtast råvareBatchNummer","");
+                int råvareBatchId = inputToInt(input);
+                v.commandRM20("Tryk ok for at afveje","");
+                maengde = v.commandS();
+                //tolerance
+                double øvreGrænse = (100.0+receptKomps[i].getTolerance())*receptKomps[i].getNonNetto();
+                double nedreGrænse = (100.0-receptKomps[i].getTolerance())*receptKomps[i].getNonNetto();
+                if(maengde>=nedreGrænse && maengde<=øvreGrænse){
+                    raavareBatch = raavareBatchDAO.get(råvareBatchId);
+                    raavareBatch.setMaengde(raavareBatch.getMaengde()-maengde);
+                    raavareBatchDAO.update(raavareBatch);
+                    produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(),råvareBatchId,user.getId(),tara,1);
+                    produktBatchKompDAO.create(produktBatchKomp);
+                    nextStep=true;
+                }
+                else{
+                    v.commandRM20("Tolerancen er ikke overholdt","");
+                }
             }
+        }while(nextStep=false);
+
+        nextStep=false;
+        do{
+            produktBatch.setBatchStatus(3);
+            nextStep=true;
         }while(nextStep=false);
 
 
