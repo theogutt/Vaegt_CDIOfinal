@@ -36,6 +36,7 @@ public class WeightController {
         do {
             input = v.commandRM20("INDTAST ID", "");
             int Id = inputToInt(input);
+            System.out.println(Id);
             user = userDAO.get(Id);
             if (user.getNavn() != null) {
                 nextStep = true;
@@ -185,7 +186,17 @@ c        } while (!inputEquals(userInput, 1234));
      */
     private int inputToInt(String input){
         int num;
+        input=input.replace("\"","");
+        input=input.replace("\"","");
+        input=input.replace("\"","");
         num = Integer.valueOf(input.replace("RM20 A ", ""));
         return num;
+    }
+    private boolean inputEquals(String input, String match){
+        return input.equalsIgnoreCase("RM20 A \"" + match +"\"");
+    }
+
+    private boolean inputEquals(String input, int match){
+        return input.equalsIgnoreCase("RM20 A \"" + match +"\"");
     }
 }
