@@ -29,8 +29,9 @@ public class WeightController {
         ProduktBatchKomp produktBatchKomp;
         ProduktBatch produktBatch;
         User user;
-        double maengde;
-        double tara = 0;
+        double netto;
+        double tara;
+        double brutto;
         String input;
         boolean nextStep = false;
 
@@ -57,7 +58,9 @@ public class WeightController {
                 if (produktBatch.getSlutDato() != null) {
                     nextStep = true;
                 }
-            else{v.commandRM20("ProduktBatchet eksisterer ikke",""); }
+            else{
+                v.commandRM20("ProduktBatchet eksisterer ikke","");
+            }
         }while(nextStep==false);
 
         nextStep=false;
@@ -70,22 +73,20 @@ public class WeightController {
             nextStep=true;
         }while(nextStep==false);
 
-
+        //Går i stå efter v.commandS
         nextStep=false;
         do{
-            input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
-            if(input.equals("RM20 A ")){
-                tara =v.commandS();
-                System.out.println(tara);
-                nextStep=true;
-            }
-        }while(nextStep=false);
+            v.commandRM20("PLACER BEHOLDER", "TRYK OK");
+            tara = v.commandS();
+            nextStep=true;
+            v.commandRM20("Tara lig "+tara, "TRYK OK");
+        }while(!nextStep);
 
         nextStep=false;
         do{
             v.commandT();
             nextStep=true;
-        }while(nextStep=false);
+        }while(nextStep==false);
 
         nextStep=false;
         do{
@@ -97,29 +98,43 @@ public class WeightController {
                 input = v.commandRM20("Indtast råvareBatchNummer","");
                 int råvareBatchId = inputToInt(input);
                 v.commandRM20("Tryk ok for at afveje","");
-                maengde = v.commandS();
+                v.commandS();
+                input = v.input();
+                System.out.println(input);
+                netto = Double.valueOf(input.replace("S S ", ""));
                 //tolerance
                 double øvreGrænse = (100.0+receptKomps[i].getTolerance())*receptKomps[i].getNonNetto();
                 double nedreGrænse = (100.0-receptKomps[i].getTolerance())*receptKomps[i].getNonNetto();
-                if(maengde>=nedreGrænse && maengde<=øvreGrænse){
+                if(netto>=nedreGrænse && netto<=øvreGrænse){
                     raavareBatch = raavareBatchDAO.get(råvareBatchId);
-                    raavareBatch.setMaengde(raavareBatch.getMaengde()-maengde);
+                    raavareBatch.setMaengde(raavareBatch.getMaengde()-netto);
                     raavareBatchDAO.update(raavareBatch);
-                    produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(),råvareBatchId,user.getId(),tara,1);
-                    produktBatchKompDAO.create(produktBatchKomp);
-                    nextStep=true;
+                    produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(),råvareBatchId,user.getId(),tara,netto);
+                    //bruttokontrol
+                    v.commandRM20("Fjern råvare og beholder","Tryk ok");
+                    v.commandS();
+                    input = v.input();
+                    System.out.println(input);
+                    brutto = Double.valueOf(input.replace("S S ", ""));
+                    if(netto+tara+brutto==0){
+                        produktBatchKompDAO.create(produktBatchKomp);
+                        nextStep=true;
+                    }
+                    else{
+                        v.commandRM20("Bruttokontrol mislykkedes","Tryk ok");
+                    }
                 }
                 else{
                     v.commandRM20("Tolerancen er ikke overholdt","");
                 }
             }
-        }while(nextStep=false);
+        }while(nextStep==false);
 
         nextStep=false;
         do{
             produktBatch.setBatchStatus(3);
             nextStep=true;
-        }while(nextStep=false);
+        }while(nextStep==false);
 
 
     }

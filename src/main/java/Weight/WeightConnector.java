@@ -31,15 +31,8 @@ public class WeightConnector {
 
     // Viser vægt i kg
     public double commandS() throws IOException {
-        double num;
         callWeight("S crlf");
-
-        String input = in.readLine();
-        System.out.println(input);
-
-        num = Double.valueOf(input.replace("S S ", ""));
-
-        return num;
+        return Double.valueOf(in.readLine().replace("S S ", ""));
     }
 
     // Tarerer vægten
@@ -69,6 +62,13 @@ public class WeightConnector {
     public String commandRM20(String output1, String output2) throws IOException {
         callWeight("RM20 8 \"" + output1 + "\" \"" + output2 + "\" \"&3\"" + " crlf");
 
+        String input = in.readLine();
+        System.out.println(input);
+
+        return input;
+    }
+
+    public String input() throws IOException {
         String input = in.readLine();
         System.out.println(input);
 
