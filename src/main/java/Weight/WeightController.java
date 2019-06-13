@@ -2,8 +2,6 @@ package Weight;
 
 import DAL.DAO.*;
 import DAL.DTO.*;
-import Weight.WeightConnector;
-
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -30,7 +28,7 @@ public class WeightController {
         ProduktBatch produktBatch;
         User user;
         double netto;
-        double tara;
+        double tara = 0;
         double brutto;
         String input;
         boolean nextStep = false;
@@ -63,26 +61,22 @@ public class WeightController {
             }
         }while(nextStep==false);
 
-        nextStep=false;
         do {
             int Id = inputToInt(input);
             produktBatch = produktBatchDAO.get(Id);
             Recept recept = receptDAO.get(produktBatch.getReceptId());
             v.commandRM20(recept.getNavn()," Skal produceres");
-            produktBatch.setBatchStatus(2);//går ud fra 2 er under produktion
+            produktBatch.setBatchStatus(2);//går ud fra at 2  betyder "under produktion"
             nextStep=true;
         }while(nextStep==false);
 
         //Går i stå efter v.commandS
-        nextStep=false;
         do{
             v.commandRM20("PLACER BEHOLDER", "TRYK OK");
-            tara = v.commandS();
-            nextStep=true;
-            v.commandRM20("Tara lig "+tara, "TRYK OK");
-        }while(!nextStep);
+            v.commandS();
+            nextStep = true;
+        }while(nextStep==false);
 
-        nextStep=false;
         do{
             v.commandT();
             nextStep=true;
@@ -130,13 +124,10 @@ public class WeightController {
             }
         }while(nextStep==false);
 
-        nextStep=false;
         do{
             produktBatch.setBatchStatus(3);
             nextStep=true;
         }while(nextStep==false);
-
-
     }
     /*
     public void testProcedure() throws IOException {

@@ -30,9 +30,8 @@ public class WeightConnector {
     }
 
     // Viser vægt i kg
-    public double commandS() throws IOException {
+    public void commandS() throws IOException {
         callWeight("S crlf");
-        return Double.valueOf(in.readLine().replace("S S ", ""));
     }
 
     // Tarerer vægten
