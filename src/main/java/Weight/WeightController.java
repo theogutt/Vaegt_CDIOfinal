@@ -40,9 +40,9 @@ public class WeightController {
             user = userDAO.get(Id);
             if (user.getNavn() != null) {
                 nextStep = true;
-                input = v.commandRM20(user.getNavn(), "Er dette dit navn? y/n");
+                input = v.commandRM20(user.getNavn(), "Er dette dit navn? TRYK OK");
                 String y = inputToString(input);
-                if (y.equals("y")) {}
+                if (y.equals("")) {}
                 else{v.commandRM20("Prøv igen","");
                     nextStep=false;}
                 }
@@ -92,6 +92,7 @@ public class WeightController {
                     int råvareBatchId = inputToInt(input);
                     v.commandRM20("Tryk ok for at afveje","");
                     netto=v.commandS();
+                    v.commandT();
                     //tolerance
                     double øvreGrænse = (100.0+receptKomps[i].getTolerance())*receptKomps[i].getNonNetto()/100;
                     double nedreGrænse = (100.0-receptKomps[i].getTolerance())*receptKomps[i].getNonNetto()/100;
