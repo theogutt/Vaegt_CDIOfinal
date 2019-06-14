@@ -34,7 +34,7 @@ public class WeightController {
         double øvreGrænse, nedreGrænse;
         String input, ok, råvareNavn;
         boolean nextStep = false, nextRåstof;
-        int råvareBatchId, produktBatchId, brugerId, id;
+        int råvareBatchId, produktBatchId, brugerId;
 
         do {
             // Tjekker bruger
@@ -70,8 +70,8 @@ public class WeightController {
         } while (!nextStep);
 
         // Fortæller bruger råstof og sætter produktBatch
-        id = inputToInt(input);
-        produktBatch = produktBatchDAO.get(id);
+        produktBatchId = inputToInt(input);
+        produktBatch = produktBatchDAO.get(produktBatchId);
         Recept recept = receptDAO.get(produktBatch.getReceptId());
         input = v.commandRM20(recept.getNavn(), " Skal produceres");
         ok = inputToString(input);
