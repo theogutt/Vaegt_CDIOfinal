@@ -37,13 +37,13 @@ public class WeightController {
         int råvareBatchId, produktBatchId, brugerId, id;
 
         do {
-            input = v.commandRM20("INDTAST ID", "");
+            input = v.commandRM20("INDTAST DIT ID", "");
             brugerId = inputToInt(input);
             System.out.println(brugerId);
             user = userDAO.get(brugerId);
             if (user.getNavn() != null) {
                 nextStep = true;
-                input = v.commandRM20(user.getNavn(), "Er dette dit navn? TRYK OK");
+                input = v.commandRM20(user.getNavn(), "Er dette dit navn? TRYK OK | Hvis nej TRYK 0+OK");
                 ok = inputToString(input);
                 if (!ok.equals("")) {
                     v.commandRM20("Prøv igen", "");
@@ -92,10 +92,10 @@ public class WeightController {
             }
             System.out.println("test, inde i loop");
             råvareNavn = raavareDAO.get(receptKomps[i].getRaavareId()).getNavn();
-            v.commandRM20(råvareNavn, "Skal afvejes");
-            input = v.commandRM20("Indtast råvareBatchNummer", "");
+            v.commandRM20("TRYK OK, når du har hentet", råvareNavn);
+            input = v.commandRM20("Indtast råvareBatchNummer for", råvareNavn);
             råvareBatchId = inputToInt(input);
-            input = v.commandRM20("PLACER NETTO", "");
+            input = v.commandRM20("PLACER NETTO i form af", råvareNavn);
             ok = inputToString(input);
             if (ok.equals("")) {
                 netto = v.commandS();
