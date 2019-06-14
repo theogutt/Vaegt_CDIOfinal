@@ -39,7 +39,6 @@ public class WeightController {
         do {
             input = v.commandRM20("INDTAST DIT ID", "");
             brugerId = inputToInt(input);
-            System.out.println(brugerId);
             user = userDAO.get(brugerId);
             if (user.getNavn() != null) {
                 nextStep = true;
@@ -79,7 +78,8 @@ public class WeightController {
         }
         recept = receptDAO.get(produktBatch.getReceptId());
         ReceptKomp[] receptKomps = recept.getIndholdsListe();
-        for (int i = 0; i < recept.getIndholdsListe().length; i++) {
+
+        for (int i = 0; i < receptKomps.length; i++) {
             input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
             ok = inputToString(input);
             if (ok.equals("")) {
@@ -90,7 +90,6 @@ public class WeightController {
             if (ok.equals("")) {
                 v.commandT();
             }
-            System.out.println("test, inde i loop");
             råvareNavn = raavareDAO.get(receptKomps[i].getRaavareId()).getNavn();
             v.commandRM20("TRYK OK, når du har hentet", råvareNavn);
             input = v.commandRM20("Indtast råvareBatchNummer for", råvareNavn);
@@ -102,8 +101,6 @@ public class WeightController {
                 v.commandT();
             }
 
-
-            //tolerance
             øvreGrænse = (100.0 + receptKomps[i].getTolerance()) * receptKomps[i].getNonNetto() / 100;
             nedreGrænse = (100.0 - receptKomps[i].getTolerance()) * receptKomps[i].getNonNetto() / 100;
             if (netto >= nedreGrænse && netto <= øvreGrænse) {
