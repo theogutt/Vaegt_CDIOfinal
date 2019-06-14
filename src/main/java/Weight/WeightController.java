@@ -27,7 +27,7 @@ public class WeightController {
         ProduktBatchKomp produktBatchKomp;
         ProduktBatch produktBatch;
         User user;
-        double netto;
+        double netto = 0;
         double tara = 0;
         double brutto;
         String input;
@@ -90,11 +90,13 @@ public class WeightController {
                     v.commandRM20(navn,"Skal afvejes");
                     input = v.commandRM20("Indtast råvareBatchNummer","");
                     int råvareBatchId = inputToInt(input);
-                    v.commandRM20("Tryk ok for at afveje","");
-                    netto=v.commandS();
+                    input = v.commandRM20("PLACER NETTO","");
+                    ok = inputToString(input);
+                    if (ok.equals(""))
+                        netto = v.commandS();
                     //tolerance
-                    double øvreGrænse = (100.0+receptKomps[i].getTolerance())*receptKomps[i].getNonNetto();
-                    double nedreGrænse = (100.0-receptKomps[i].getTolerance())*receptKomps[i].getNonNetto();
+                    double øvreGrænse = (100.0+receptKomps[i].getTolerance())*receptKomps[i].getNonNetto() / 100;
+                    double nedreGrænse = (100.0-receptKomps[i].getTolerance())*receptKomps[i].getNonNetto() / 100;
                     if(netto>=nedreGrænse && netto<=øvreGrænse){
                         raavareBatch = raavareBatchDAO.get(råvareBatchId);
                         raavareBatch.setMaengde(raavareBatch.getMaengde()-netto);
@@ -103,6 +105,7 @@ public class WeightController {
                         //bruttokontrol
                         v.commandRM20("Fjern råvare og beholder","Tryk ok");
                         brutto = v.commandS();
+                        v.commandT();
                         if(netto+tara+brutto==0){
                             produktBatchKompDAO.create(produktBatchKomp);
                         }
