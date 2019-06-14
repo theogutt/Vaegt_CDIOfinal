@@ -41,7 +41,8 @@ public class WeightController {
             if (user.getNavn() != null) {
                 nextStep = true;
                 input = v.commandRM20(user.getNavn(), "Er dette dit navn? y/n");
-                if (input.equals("RM20 A y")) {}
+                String y = inputToString(input);
+                if (y.equals("y")) {}
                 else{v.commandRM20("Prøv igen","");
                     nextStep=false;}
                 }
@@ -190,6 +191,14 @@ c        } while (!inputEquals(userInput, 1234));
         input=input.replace("\"","");
         input=input.replace("\"","");
         num = Integer.valueOf(input.replace("RM20 A ", ""));
+        return num;
+    }
+    private String inputToString(String input){
+        String num;
+        input=input.replace("\"","");
+        input=input.replace("\"","");
+        input=input.replace("\"","");
+        num = input.replace("RM20 A ", "");
         return num;
     }
     private boolean inputEquals(String input, String match){
