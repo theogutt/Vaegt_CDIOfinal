@@ -26,14 +26,14 @@ public class WeightController {
     }
 
     private void afvejning() throws IOException, SQLException, IDAO.DALException {
-        RaavareBatch raavareBatch;
-        ProduktBatchKomp produktBatchKomp;
+        RaavareBatch raavareBatch = new RaavareBatch();
+        ProduktBatchKomp produktBatchKomp = new ProduktBatchKomp();
         ProduktBatch produktBatch;
         User user;
         double netto = 0, tara = 0, brutto;
         double øvreGrænse, nedreGrænse;
         String input, ok, råvareNavn;
-        boolean nextStep = false;
+        boolean nextStep = false, nextRåstof;
         int råvareBatchId, produktBatchId, brugerId, id;
 
         do {
@@ -76,7 +76,7 @@ public class WeightController {
         input = v.commandRM20(recept.getNavn(), " Skal produceres");
         ok = inputToString(input);
         if (ok.equals("")) {
-            produktBatch.setBatchStatus(2);//går ud fra at 2  betyder "under produktion"
+            produktBatch.setBatchStatus(1);
             produktBatchDAO.update(produktBatch);
         }
         recept = receptDAO.get(produktBatch.getReceptId());
@@ -84,6 +84,7 @@ public class WeightController {
 
         // Styrer afvejning
         for (int i = 0; i < recept.getIndholdsListe().length; i++) {
+            nextRåstof = true;
             // Laver første taraering
             input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
             ok = inputToString(input);
@@ -114,7 +115,6 @@ public class WeightController {
             if (netto >= nedreGrænse && netto <= øvreGrænse) {
                 raavareBatch = raavareBatchDAO.get(råvareBatchId);
                 raavareBatch.setMaengde(raavareBatch.getMaengde() - netto);
-                raavareBatchDAO.update(raavareBatch);
                 produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(), råvareBatchId, user.getId(), tara, netto);
 
                 // Laver bruttokontrol
@@ -122,13 +122,23 @@ public class WeightController {
                 brutto = v.commandS();
                 v.commandT();
                 if (netto + tara + brutto == 0) {
-                    produktBatchKompDAO.create(produktBatchKomp);
                     v.commandRM20("Bruttokontrol lykkes", "Tryk ok");
                 } else {
                     v.commandRM20("Bruttokontrol mislykkedes", "Tryk ok");
+                    nextRåstof = false;
                 }
             } else {
-                v.commandRM20("Tolerancen er ikke overholdt", "");
+                v.commandRM20("Tolerancen er ikke overholdt", "Tryk ok");
+                nextRåstof = false;
+            }
+            if (!nextRåstof) {
+                i--;
+                v.commandRM20("Grundet fejl afvej samme råstof igen", "Tryk ok");
+                v.commandT();
+            }
+            else{
+                raavareBatchDAO.update(raavareBatch);
+                produktBatchKompDAO.create(produktBatchKomp);
             }
         }
 
