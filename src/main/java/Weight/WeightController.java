@@ -73,18 +73,19 @@ public class WeightController {
                 produktBatch.setBatchStatus(2);//går ud fra at 2  betyder "under produktion"
                 produktBatchDAO.update(produktBatch);
             }
-            input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
-            ok = inputToString(input);
-            if(ok.equals("")) {
-                tara=v.commandS();
-            }
-            input = v.commandRM20("Tarer", "TRYK OK");
-            ok = inputToString(input);
-            if(ok.equals("")){
-                v.commandT();
                 recept = receptDAO.get(produktBatch.getReceptId());
                 ReceptKomp[] receptKomps = recept.getIndholdsListe();
                 for(int i = 0; i<recept.getIndholdsListe().length;i++) {
+                    input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
+                    ok = inputToString(input);
+                    if(ok.equals("")) {
+                        tara=v.commandS();
+                    }
+                    input = v.commandRM20("Tarer", "TRYK OK");
+                    ok = inputToString(input);
+                    if(ok.equals("")) {
+                        v.commandT();
+                    }
                     System.out.println("test, inde i loop");
                     String navn = raavareDAO.get(receptKomps[i].getRaavareId()).getNavn();
                     v.commandRM20(navn,"Skal afvejes");
@@ -104,6 +105,7 @@ public class WeightController {
                         //bruttokontrol
                         v.commandRM20("Fjern råvare og beholder","Tryk ok");
                         brutto = v.commandS();
+                        v.commandT();
                         if(netto+tara+brutto==0){
                             produktBatchKompDAO.create(produktBatchKomp);
                         }
@@ -115,7 +117,6 @@ public class WeightController {
                         v.commandRM20("Tolerancen er ikke overholdt","");
                     }
                 }
-            }
             nextStep=true;
         }while(nextStep==false);
         do{
