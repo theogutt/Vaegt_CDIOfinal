@@ -107,18 +107,22 @@ public class WeightController {
                 raavareBatch = raavareBatchDAO.get(råvareBatchId);
                 raavareBatch.setMaengde(raavareBatch.getMaengde() - netto);
                 raavareBatchDAO.update(raavareBatch);
-                produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(), råvareBatchId, user.getId(), tara, netto);
                 //bruttokontrol
                 v.commandRM20("Fjern råvare og beholder", "Tryk ok");
                 brutto = v.commandS();
                 v.commandT();
                 if (netto + tara + brutto == 0) {
+                    produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(), råvareBatchId, user.getId(), tara, netto);
                     produktBatchKompDAO.create(produktBatchKomp);
+                    v.commandRM20("Bruttokontrol lykkedes", "Tryk ok");
                 } else {
                     v.commandRM20("Bruttokontrol mislykkedes", "Tryk ok");
                 }
             } else {
                 v.commandRM20("Tolerancen er ikke overholdt", "");
+            }
+            if(i==2-receptKomps.length){
+                v.commandRM20("For næste afvejning", "Tryk ok");
             }
         }
         produktBatch.setBatchStatus(3);
