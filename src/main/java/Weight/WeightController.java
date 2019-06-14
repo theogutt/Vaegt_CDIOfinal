@@ -76,62 +76,50 @@ public class WeightController {
             input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
             ok = inputToString(input);
             if(ok.equals("")) {
-                v.commandS();
+                tara=v.commandS();
             }
-            nextStep=true;
-        }while(nextStep==false);
-
-        //Går i stå efter v.commandS
-
-        do{
-            v.commandT();
-            nextStep=true;
-        }while(nextStep==false);
-
-        nextStep=false;
-        do{
-            Recept recept = receptDAO.get(produktBatch.getReceptId());
-            ReceptKomp[] receptKomps = recept.getIndholdsListe();
-            for(int i = 0; i<recept.getIndholdsListe().length;i++) {
-                String navn = raavareDAO.get(receptKomps[i].getRaavareId()).getNavn();
-                v.commandRM20(navn,"Skal afvejes");
-                input = v.commandRM20("Indtast råvareBatchNummer","");
-                int råvareBatchId = inputToInt(input);
-                v.commandRM20("Tryk ok for at afveje","");
-                v.commandS();
-                input = v.input();
-                System.out.println(input);
-                netto = Double.valueOf(input.replace("S S ", ""));
-                //tolerance
-                double øvreGrænse = (100.0+receptKomps[i].getTolerance())*receptKomps[i].getNonNetto();
-                double nedreGrænse = (100.0-receptKomps[i].getTolerance())*receptKomps[i].getNonNetto();
-                if(netto>=nedreGrænse && netto<=øvreGrænse){
-                    raavareBatch = raavareBatchDAO.get(råvareBatchId);
-                    raavareBatch.setMaengde(raavareBatch.getMaengde()-netto);
-                    raavareBatchDAO.update(raavareBatch);
-                    produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(),råvareBatchId,user.getId(),tara,netto);
-                    //bruttokontrol
-                    v.commandRM20("Fjern råvare og beholder","Tryk ok");
-                    v.commandS();
-                    input = v.input();
-                    System.out.println(input);
-                    brutto = Double.valueOf(input.replace("S S ", ""));
-                    if(netto+tara+brutto==0){
-                        produktBatchKompDAO.create(produktBatchKomp);
-                        nextStep=true;
+            input = v.commandRM20("Tarer", "TRYK OK");
+            ok = inputToString(input);
+            if(ok.equals("")){
+                v.commandT();
+                recept = receptDAO.get(produktBatch.getReceptId());
+                ReceptKomp[] receptKomps = recept.getIndholdsListe();
+                for(int i = 0; i<recept.getIndholdsListe().length;i++) {
+                    System.out.println("test, inde i loop");
+                    String navn = raavareDAO.get(receptKomps[i].getRaavareId()).getNavn();
+                    v.commandRM20(navn,"Skal afvejes");
+                    input = v.commandRM20("Indtast råvareBatchNummer","");
+                    int råvareBatchId = inputToInt(input);
+                    v.commandRM20("Tryk ok for at afveje","");
+                    netto=v.commandS();
+                    //tolerance
+                    double øvreGrænse = (100.0+receptKomps[i].getTolerance())*receptKomps[i].getNonNetto();
+                    double nedreGrænse = (100.0-receptKomps[i].getTolerance())*receptKomps[i].getNonNetto();
+                    if(netto>=nedreGrænse && netto<=øvreGrænse){
+                        raavareBatch = raavareBatchDAO.get(råvareBatchId);
+                        raavareBatch.setMaengde(raavareBatch.getMaengde()-netto);
+                        raavareBatchDAO.update(raavareBatch);
+                        produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(),råvareBatchId,user.getId(),tara,netto);
+                        //bruttokontrol
+                        v.commandRM20("Fjern råvare og beholder","Tryk ok");
+                        brutto = v.commandS();
+                        if(netto+tara+brutto==0){
+                            produktBatchKompDAO.create(produktBatchKomp);
+                        }
+                        else{
+                            v.commandRM20("Bruttokontrol mislykkedes","Tryk ok");
+                        }
                     }
                     else{
-                        v.commandRM20("Bruttokontrol mislykkedes","Tryk ok");
+                        v.commandRM20("Tolerancen er ikke overholdt","");
                     }
                 }
-                else{
-                    v.commandRM20("Tolerancen er ikke overholdt","");
-                }
             }
+            nextStep=true;
         }while(nextStep==false);
-
         do{
             produktBatch.setBatchStatus(3);
+            produktBatchDAO.update(produktBatch);
             nextStep=true;
         }while(nextStep==false);
     }
