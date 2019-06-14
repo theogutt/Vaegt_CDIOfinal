@@ -67,17 +67,21 @@ public class WeightController {
             int Id = inputToInt(input);
             produktBatch = produktBatchDAO.get(Id);
             Recept recept = receptDAO.get(produktBatch.getReceptId());
-            v.commandRM20(recept.getNavn()," Skal produceres");
-            produktBatch.setBatchStatus(2);//går ud fra at 2  betyder "under produktion"
+            input = v.commandRM20(recept.getNavn()," Skal produceres");
+            String ok = inputToString(input);
+            if(ok.equals("")) {
+                produktBatch.setBatchStatus(2);//går ud fra at 2  betyder "under produktion"
+                produktBatchDAO.update(produktBatch);
+            }
+            input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
+            ok = inputToString(input);
+            if(ok.equals("")) {
+                v.commandS();
+            }
             nextStep=true;
         }while(nextStep==false);
 
         //Går i stå efter v.commandS
-        do{
-            v.commandRM20("PLACER BEHOLDER", "TRYK OK");
-            v.commandS();
-            nextStep = true;
-        }while(nextStep==false);
 
         do{
             v.commandT();
