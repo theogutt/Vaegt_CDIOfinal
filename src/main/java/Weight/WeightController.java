@@ -38,13 +38,12 @@ public class WeightController {
 
         do {
             // Tjekker bruger
-            input = v.commandRM20("INDTAST ID", "");
+            input = v.commandRM20("INDTAST DIT ID", "");
             brugerId = inputToInt(input);
-            System.out.println(brugerId);
             user = userDAO.get(brugerId);
-            if (user.getNavn() != null) {
+            if (userExsists(user)) {
                 nextStep = true;
-                input = v.commandRM20(user.getNavn(), "Er dette dit navn? TRYK OK");
+                input = v.commandRM20(user.getNavn(), "Er dette dit navn? TRYK OK | Hvis nej TRYK 0+OK");
                 ok = inputToString(input);
                 if (!ok.equals("")) {
                     v.commandRM20("Prøv igen", "");
@@ -62,7 +61,7 @@ public class WeightController {
             input = v.commandRM20("INDTAST PRODUKTBATCHID", "");
             produktBatchId = inputToInt(input);
             produktBatch = produktBatchDAO.get(produktBatchId);
-            if (produktBatch.getSlutDato() != null) {
+            if (produktBatchExsists(produktBatch)) {
                 nextStep = true;
             } else {
                 v.commandRM20("ProduktBatchet eksisterer ikke", "");
@@ -83,7 +82,7 @@ public class WeightController {
         ReceptKomp[] receptKomps = recept.getIndholdsListe();
 
         // Styrer afvejning
-        for (int i = 0; i < recept.getIndholdsListe().length; i++) {
+        for (int i = 0; i < receptKomps.length; i++) {
             nextRåstof = true;
             // Laver første taraering
             input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
@@ -99,10 +98,10 @@ public class WeightController {
 
             // Setter råvarebatch, og starter afvejning
             råvareNavn = raavareDAO.get(receptKomps[i].getRaavareId()).getNavn();
-            v.commandRM20(råvareNavn, "Skal afvejes");
-            input = v.commandRM20("Indtast råvareBatchNummer", "");
+            v.commandRM20("TRYK OK, når du har hentet", råvareNavn);
+            input = v.commandRM20("Indtast råvareBatchNummer for", råvareNavn);
             råvareBatchId = inputToInt(input);
-            input = v.commandRM20("PLACER NETTO", "");
+            input = v.commandRM20("PLACER NETTO i form af", råvareNavn);
             ok = inputToString(input);
             if (ok.equals("")) {
                 netto = v.commandS();
@@ -123,6 +122,9 @@ public class WeightController {
                 v.commandT();
                 if (netto + tara + brutto == 0) {
                     v.commandRM20("Bruttokontrol lykkes", "Tryk ok");
+                    produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(), råvareBatchId, user.getId(), tara, netto);
+                    produktBatchKompDAO.create(produktBatchKomp);
+                    v.commandRM20("Bruttokontrol lykkedes", "Tryk ok");
                 } else {
                     v.commandRM20("Bruttokontrol mislykkedes", "Tryk ok");
                     nextRåstof = false;
@@ -139,6 +141,9 @@ public class WeightController {
             else{
                 raavareBatchDAO.update(raavareBatch);
                 produktBatchKompDAO.create(produktBatchKomp);
+            }
+            if(i==2-receptKomps.length){
+                v.commandRM20("For næste afvejning", "Tryk ok");
             }
         }
 
@@ -160,5 +165,27 @@ public class WeightController {
         input = input.replace("\"", "");
         num = input.replace("RM20 A ", "");
         return num;
+    }
+    private boolean userExsists(User user) throws SQLException, IDAO.DALException {
+        boolean result = false;
+        User[] array = userDAO.getList();
+        for (int i = 0; i<array.length; i++){
+            if(user.getId()==array[i].getId()){
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+    private boolean produktBatchExsists(ProduktBatch produktBatch) throws SQLException, IDAO.DALException {
+        boolean result = false;
+        ProduktBatch[] array = produktBatchDAO.getList();
+        for (int i = 0; i<array.length; i++){
+            if(produktBatch.getId()==array[i].getId()){
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 }
