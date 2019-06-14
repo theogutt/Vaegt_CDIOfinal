@@ -93,8 +93,8 @@ public class WeightController {
                     v.commandRM20("Tryk ok for at afveje","");
                     netto=v.commandS();
                     //tolerance
-                    double øvreGrænse = (100.0+receptKomps[i].getTolerance())*receptKomps[i].getNonNetto();
-                    double nedreGrænse = (100.0-receptKomps[i].getTolerance())*receptKomps[i].getNonNetto();
+                    double øvreGrænse = (100.0+receptKomps[i].getTolerance())*receptKomps[i].getNonNetto()/100;
+                    double nedreGrænse = (100.0-receptKomps[i].getTolerance())*receptKomps[i].getNonNetto()/100;
                     if(netto>=nedreGrænse && netto<=øvreGrænse){
                         raavareBatch = raavareBatchDAO.get(råvareBatchId);
                         raavareBatch.setMaengde(raavareBatch.getMaengde()-netto);
