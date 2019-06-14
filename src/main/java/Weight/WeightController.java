@@ -37,6 +37,7 @@ public class WeightController {
         int råvareBatchId, produktBatchId, brugerId, id;
 
         do {
+            // Tjekker bruger
             input = v.commandRM20("INDTAST ID", "");
             brugerId = inputToInt(input);
             System.out.println(brugerId);
@@ -55,6 +56,7 @@ public class WeightController {
         }
         while (!nextStep);
 
+        // Tjekker produktBatch
         nextStep = false;
         do {
             input = v.commandRM20("INDTAST PRODUKTBATCHID", "");
@@ -67,7 +69,7 @@ public class WeightController {
             }
         } while (!nextStep);
 
-
+        // Fortæller bruger råstof og sætter produktBatch
         id = inputToInt(input);
         produktBatch = produktBatchDAO.get(id);
         Recept recept = receptDAO.get(produktBatch.getReceptId());
@@ -79,7 +81,10 @@ public class WeightController {
         }
         recept = receptDAO.get(produktBatch.getReceptId());
         ReceptKomp[] receptKomps = recept.getIndholdsListe();
+
+        // Styrer afvejning
         for (int i = 0; i < recept.getIndholdsListe().length; i++) {
+            // Laver første taraering
             input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
             ok = inputToString(input);
             if (ok.equals("")) {
@@ -90,7 +95,8 @@ public class WeightController {
             if (ok.equals("")) {
                 v.commandT();
             }
-            System.out.println("test, inde i loop");
+
+            // Setter råvarebatch, og starter afvejning
             råvareNavn = raavareDAO.get(receptKomps[i].getRaavareId()).getNavn();
             v.commandRM20(råvareNavn, "Skal afvejes");
             input = v.commandRM20("Indtast råvareBatchNummer", "");
@@ -102,8 +108,7 @@ public class WeightController {
                 v.commandT();
             }
 
-
-            //tolerance
+            // Udregner tolerance
             øvreGrænse = (100.0 + receptKomps[i].getTolerance()) * receptKomps[i].getNonNetto() / 100;
             nedreGrænse = (100.0 - receptKomps[i].getTolerance()) * receptKomps[i].getNonNetto() / 100;
             if (netto >= nedreGrænse && netto <= øvreGrænse) {
@@ -111,12 +116,14 @@ public class WeightController {
                 raavareBatch.setMaengde(raavareBatch.getMaengde() - netto);
                 raavareBatchDAO.update(raavareBatch);
                 produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(), råvareBatchId, user.getId(), tara, netto);
-                //bruttokontrol
+
+                // Laver bruttokontrol
                 v.commandRM20("Fjern råvare og beholder", "Tryk ok");
                 brutto = v.commandS();
                 v.commandT();
                 if (netto + tara + brutto == 0) {
                     produktBatchKompDAO.create(produktBatchKomp);
+                    v.commandRM20("Bruttokontrol lykkes", "Tryk ok");
                 } else {
                     v.commandRM20("Bruttokontrol mislykkedes", "Tryk ok");
                 }
@@ -124,6 +131,8 @@ public class WeightController {
                 v.commandRM20("Tolerancen er ikke overholdt", "");
             }
         }
+
+        // Afslutter afvejning
         produktBatch.setBatchStatus(3);
         produktBatchDAO.update(produktBatch);
         v.commandRM20("Afvejning udført", "");

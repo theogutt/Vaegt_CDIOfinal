@@ -15,7 +15,7 @@ public class WeightConnector {
         //in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
     }
 
-    public void callWeight(String command) throws IOException {
+    private void callWeight(String command) throws IOException {
         out = new PrintWriter(sock.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
@@ -26,7 +26,7 @@ public class WeightConnector {
 
         System.out.println();
     }
-    public void SCallWeight(String command) throws IOException {
+    private void SCallWeight(String command) throws IOException {
         out = new PrintWriter(sock.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
