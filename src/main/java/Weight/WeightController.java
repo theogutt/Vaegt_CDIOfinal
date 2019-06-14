@@ -114,16 +114,13 @@ public class WeightController {
             if (netto >= nedreGrænse && netto <= øvreGrænse) {
                 raavareBatch = raavareBatchDAO.get(råvareBatchId);
                 raavareBatch.setMaengde(raavareBatch.getMaengde() - netto);
-                produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(), råvareBatchId, user.getId(), tara, netto);
 
                 // Laver bruttokontrol
                 v.commandRM20("Fjern råvare og beholder", "Tryk ok");
                 brutto = v.commandS();
                 v.commandT();
                 if (netto + tara + brutto == 0) {
-                    v.commandRM20("Bruttokontrol lykkes", "Tryk ok");
                     produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(), råvareBatchId, user.getId(), tara, netto);
-                    produktBatchKompDAO.create(produktBatchKomp);
                     v.commandRM20("Bruttokontrol lykkedes", "Tryk ok");
                 } else {
                     v.commandRM20("Bruttokontrol mislykkedes", "Tryk ok");
