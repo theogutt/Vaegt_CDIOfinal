@@ -40,7 +40,7 @@ public class WeightController {
             input = v.commandRM20("INDTAST DIT ID", "");
             brugerId = inputToInt(input);
             user = userDAO.get(brugerId);
-            if (user.getNavn() != null) {
+            if (userExsists(user)) {
                 nextStep = true;
                 input = v.commandRM20(user.getNavn(), "Er dette dit navn? TRYK OK | Hvis nej TRYK 0+OK");
                 ok = inputToString(input);
@@ -59,7 +59,7 @@ public class WeightController {
             input = v.commandRM20("INDTAST PRODUKTBATCHID", "");
             produktBatchId = inputToInt(input);
             produktBatch = produktBatchDAO.get(produktBatchId);
-            if (produktBatch.getSlutDato() != null) {
+            if (produktBatchExsists(produktBatch)) {
                 nextStep = true;
             } else {
                 v.commandRM20("ProduktBatchet eksisterer ikke", "");
@@ -138,5 +138,27 @@ public class WeightController {
         input = input.replace("\"", "");
         num = input.replace("RM20 A ", "");
         return num;
+    }
+    private boolean userExsists(User user) throws SQLException, IDAO.DALException {
+        boolean result = false;
+        User[] array = userDAO.getList();
+        for (int i = 0; i<array.length; i++){
+            if(user.getId()==array[i].getId()){
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+    private boolean produktBatchExsists(ProduktBatch produktBatch) throws SQLException, IDAO.DALException {
+        boolean result = false;
+        ProduktBatch[] array = produktBatchDAO.getList();
+        for (int i = 0; i<array.length; i++){
+            if(produktBatch.getId()==array[i].getId()){
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 }
