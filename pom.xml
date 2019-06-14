@@ -5,8 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>Gruppe17</groupId>
-    <artifactId>Vægt_CDIOfinal</artifactId>
+    <artifactId>CDIO_Final</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+
+    <packaging>war</packaging>
     <build>
         <plugins>
             <plugin>
@@ -64,6 +67,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13-beta-3</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
