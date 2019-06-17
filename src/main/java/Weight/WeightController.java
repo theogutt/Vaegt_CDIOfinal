@@ -2,9 +2,11 @@ package Weight;
 
 import DAL.DAO.*;
 import DAL.DTO.*;
-
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class WeightController {
 
@@ -26,7 +28,7 @@ public class WeightController {
     }
 
     private void afvejning() throws IOException, SQLException, IDAO.DALException {
-        RaavareBatch raavareBatch = new RaavareBatch();
+        RaavareBatch raavareBatch;
         ProduktBatchKomp produktBatchKomp = new ProduktBatchKomp();
         ProduktBatch produktBatch;
         User user;
@@ -148,7 +150,10 @@ public class WeightController {
         }
 
         // Afslutter afvejning
-        produktBatch.setBatchStatus(3);
+        produktBatch.setBatchStatus(2);
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        produktBatch.setSlutDato(dateFormat.format(date));
         produktBatchDAO.update(produktBatch);
         v.commandRM20("Afvejning udført", "");
     }
