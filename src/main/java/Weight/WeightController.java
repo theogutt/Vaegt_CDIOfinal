@@ -33,10 +33,10 @@ public class WeightController {
         ProduktBatch produktBatch;
         User user;
         double netto = 0, tara = 0, brutto;
-        double øvreGrænse, nedreGrænse;
-        String input, ok, råvareNavn;
-        boolean nextStep = false, nextRåstof;
-        int råvareBatchId, produktBatchId, brugerId, råvareId;
+        double oevreGraense, nedreGraense;
+        String input, ok, raavareNavn;
+        boolean nextStep = false, nextRaastof;
+        int raavareBatchId, produktBatchId, brugerId, raavareId;
 
         do {
             // Tjekker bruger
@@ -85,7 +85,7 @@ public class WeightController {
 
         // Styrer afvejning
         for (int i = 0; i < receptKomps.length; i++) {
-            nextRåstof = true;
+            nextRaastof = true;
             // Laver første taraering
             input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
             ok = inputToString(input);
@@ -95,19 +95,19 @@ public class WeightController {
             v.commandT();
 
             // Setter råvarebatch, og starter afvejning
-            råvareNavn = raavareDAO.get(receptKomps[i].getRaavareId()).getNavn();
-            råvareId = raavareDAO.get(receptKomps[i].getRaavareId()).getId();
-            v.commandRM20("TRYK OK, når du har hentet", råvareNavn);
+            raavareNavn = raavareDAO.get(receptKomps[i].getRaavareId()).getNavn();
+            raavareId = raavareDAO.get(receptKomps[i].getRaavareId()).getId();
+            v.commandRM20("TRYK OK, når du har hentet", raavareNavn);
             while (true) {
-                input = v.commandRM20("Indtast råvareBatchNummer for", råvareNavn);
-                råvareBatchId = inputToInt(input);
-                raavareBatch = raavareBatchDAO.get(råvareBatchId);
-                if (raavareBatch.getRaavareId() != råvareId)
-                    v.commandRM20("Dette råvareBatch er ikke " + råvareNavn,"");
+                input = v.commandRM20("Indtast råvareBatchNummer for", raavareNavn);
+                raavareBatchId = inputToInt(input);
+                raavareBatch = raavareBatchDAO.get(raavareBatchId);
+                if (raavareBatch.getRaavareId() != raavareId)
+                    v.commandRM20("Dette råvareBatch er ikke " + raavareNavn,"");
                 else
                     break;
             }
-            input = v.commandRM20("PLACER NETTO i form af", råvareNavn);
+            input = v.commandRM20("PLACER NETTO i form af", raavareNavn);
             ok = inputToString(input);
             if (ok.equals("")) {
                 netto = v.commandS();
@@ -115,9 +115,9 @@ public class WeightController {
             }
 
             // Udregner tolerance
-            øvreGrænse = (100.0 + receptKomps[i].getTolerance()) * receptKomps[i].getNonNetto() / 100;
-            nedreGrænse = (100.0 - receptKomps[i].getTolerance()) * receptKomps[i].getNonNetto() / 100;
-            if (netto >= nedreGrænse && netto <= øvreGrænse) {
+            oevreGraense = (100.0 + receptKomps[i].getTolerance()) * receptKomps[i].getNonNetto() / 100;
+            nedreGraense = (100.0 - receptKomps[i].getTolerance()) * receptKomps[i].getNonNetto() / 100;
+            if (netto >= nedreGraense && netto <= oevreGraense) {
                 raavareBatch.setMaengde(raavareBatch.getMaengde() - netto);
 
                 // Laver bruttokontrol
@@ -125,17 +125,17 @@ public class WeightController {
                 brutto = v.commandS();
                 v.commandT();
                 if (netto + tara + brutto < 0.01 && netto + tara + brutto > -0.01) {
-                    produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(), råvareBatchId, user.getId(), tara, netto);
+                    produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(), raavareBatchId, user.getId(), tara, netto);
                     v.commandRM20("Bruttokontrol lykkedes", "Tryk ok");
                 } else {
                     v.commandRM20("Bruttokontrol mislykkedes", "Tryk ok");
-                    nextRåstof = false;
+                    nextRaastof = false;
                 }
             } else {
                 v.commandRM20("Tolerancen er ikke overholdt", "Tryk ok");
-                nextRåstof = false;
+                nextRaastof = false;
             }
-            if (!nextRåstof) {
+            if (!nextRaastof) {
                 i--;
                 v.commandRM20("Grundet fejl afvej samme råstof igen", "Tryk ok");
                 v.commandT();
@@ -176,19 +176,19 @@ public class WeightController {
     private boolean userExsists(User user) throws SQLException, IDAO.DALException {
         boolean result = false;
         User[] array = userDAO.getList();
-        for (int i = 0; i<array.length; i++){
-            if(user.getId()==array[i].getId()){
+        for (User currUser : array){
+            if(user.getId() == currUser.getId()){
                 result = true;
                 break;
             }
         }
         return result;
     }
-    private boolean produktBatchExsists(ProduktBatch produktBatch) throws SQLException, IDAO.DALException {
+    private boolean produktBatchExsists(ProduktBatch produktBatch) throws SQLException{
         boolean result = false;
         ProduktBatch[] array = produktBatchDAO.getList();
-        for (int i = 0; i<array.length; i++){
-            if(produktBatch.getId()==array[i].getId()){
+        for (ProduktBatch currProduktBatch : array){
+            if(produktBatch.getId() == currProduktBatch.getId()){
                 result = true;
                 break;
             }
