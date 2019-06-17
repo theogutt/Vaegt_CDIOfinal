@@ -26,6 +26,7 @@ public class WeightConnector {
 
         System.out.println();
     }
+
     private void SCallWeight(String command) throws IOException {
         out = new PrintWriter(sock.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
@@ -40,10 +41,10 @@ public class WeightConnector {
         SCallWeight("S crlf");
         String input = in.readLine();
         System.out.println();
-        input=input.replace("\"","");
-        input = input.replace("S S     ","");
-        input = input.replace(" kg","");
-        System.out.println("test: "+input);
+        input = input.replace("\"", "");
+        input = input.replace("S S     ", "");
+        input = input.replace(" kg", "");
+        System.out.println("test: " + input);
         val = Double.valueOf(input);
         return val;
     }
@@ -74,10 +75,19 @@ public class WeightConnector {
     // Skriver "output" og "output2" i to displays og venter på inputs
     public String commandRM20(String output1, String output2) throws IOException {
         callWeight("RM20 8 \"" + output1 + "\" \"" + output2 + "\" \"&3\"" + " crlf");
-
-        String input = in.readLine();
+        String input = listenFor("RM20");
         System.out.println(input);
 
+        return input;
+    }
+    public String listenFor(String lookFor) throws IOException {
+        String input;
+        while (true) {
+            input = in.readLine();
+            if (input.contains(lookFor)) {
+                break;
+            }
+        }
         return input;
     }
 }
