@@ -39,7 +39,7 @@ public class WeightConnector {
     public Double commandS() throws IOException {
         double val;
         SCallWeight("S crlf");
-        String input = in.readLine();
+        String input = listen("SS");
         System.out.println();
         input = input.replace("\"", "");
         input = input.replace("S S     ", "");
@@ -75,19 +75,19 @@ public class WeightConnector {
     // Skriver "output" og "output2" i to displays og venter på inputs
     public String commandRM20(String output1, String output2) throws IOException {
         callWeight("RM20 8 \"" + output1 + "\" \"" + output2 + "\" \"&3\"" + " crlf");
-        String input = listenFor("RM20");
+        String input = listen("RM20A");
         System.out.println(input);
 
         return input;
     }
-    public String listenFor(String lookFor) throws IOException {
+    public String listen(String lookingFor) throws IOException {
         String input;
         while (true) {
             input = in.readLine();
-            if (input.contains(lookFor)) {
-                break;
+            input = input.replace(" ", "");
+            if (input.contains(lookingFor)) {
+                return input;
             }
         }
-        return input;
     }
 }
