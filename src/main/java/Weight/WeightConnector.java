@@ -39,7 +39,7 @@ public class WeightConnector {
     public Double commandS() throws IOException {
         double val;
         SCallWeight("S crlf");
-        String input = in.readLine();
+        String input = listenFor("S S");
         System.out.println();
         input = input.replace("\"", "");
         input = input.replace("S S     ", "");
@@ -85,9 +85,8 @@ public class WeightConnector {
         while (true) {
             input = in.readLine();
             if (input.contains(lookFor)) {
-                break;
+                return input;
             }
         }
-        return input;
     }
 }
