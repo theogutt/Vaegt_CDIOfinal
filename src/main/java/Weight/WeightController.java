@@ -34,7 +34,7 @@ public class WeightController {
         double øvreGrænse, nedreGrænse;
         String input, ok, råvareNavn;
         boolean nextStep = false, nextRåstof;
-        int råvareBatchId, produktBatchId, brugerId;
+        int råvareBatchId, produktBatchId, brugerId, råvareId;
 
         do {
             // Tjekker bruger
@@ -90,17 +90,21 @@ public class WeightController {
             if (ok.equals("")) {
                 tara = v.commandS();
             }
-            input = v.commandRM20("Tarer", "TRYK OK");
-            ok = inputToString(input);
-            if (ok.equals("")) {
-                v.commandT();
-            }
+            v.commandT();
 
             // Setter råvarebatch, og starter afvejning
             råvareNavn = raavareDAO.get(receptKomps[i].getRaavareId()).getNavn();
+            råvareId = raavareDAO.get(receptKomps[i].getRaavareId()).getId();
             v.commandRM20("TRYK OK, når du har hentet", råvareNavn);
-            input = v.commandRM20("Indtast råvareBatchNummer for", råvareNavn);
-            råvareBatchId = inputToInt(input);
+            while (true) {
+                input = v.commandRM20("Indtast råvareBatchNummer for", råvareNavn);
+                råvareBatchId = inputToInt(input);
+                raavareBatch = raavareBatchDAO.get(råvareBatchId);
+                if (raavareBatch.getRaavareId() != råvareId)
+                    v.commandRM20("Dette råvareBatch er ikke " + råvareNavn,"");
+                else
+                    break;
+            }
             input = v.commandRM20("PLACER NETTO i form af", råvareNavn);
             ok = inputToString(input);
             if (ok.equals("")) {
@@ -112,14 +116,13 @@ public class WeightController {
             øvreGrænse = (100.0 + receptKomps[i].getTolerance()) * receptKomps[i].getNonNetto() / 100;
             nedreGrænse = (100.0 - receptKomps[i].getTolerance()) * receptKomps[i].getNonNetto() / 100;
             if (netto >= nedreGrænse && netto <= øvreGrænse) {
-                raavareBatch = raavareBatchDAO.get(råvareBatchId);
                 raavareBatch.setMaengde(raavareBatch.getMaengde() - netto);
 
                 // Laver bruttokontrol
                 v.commandRM20("Fjern råvare og beholder", "Tryk ok");
                 brutto = v.commandS();
                 v.commandT();
-                if (netto + tara + brutto == 0) {
+                if (netto + tara + brutto < 0.01 && netto + tara + brutto > -0.01) {
                     produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(), råvareBatchId, user.getId(), tara, netto);
                     v.commandRM20("Bruttokontrol lykkedes", "Tryk ok");
                 } else {
