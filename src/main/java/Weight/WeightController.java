@@ -37,6 +37,7 @@ public class WeightController {
         String input, ok, raavareNavn;
         boolean nextStep = false, nextRaastof;
         int raavareBatchId, produktBatchId, brugerId, raavareId;
+        double raavareTole;
 
         do {
             // Tjekker bruger
@@ -102,8 +103,11 @@ public class WeightController {
                 input = v.commandRM20("Indtast råvareBatchNummer for", raavareNavn);
                 raavareBatchId = inputToInt(input);
                 raavareBatch = raavareBatchDAO.get(raavareBatchId);
+                raavareTole = (100.0 - receptKomps[i].getTolerance()) * receptKomps[i].getNonNetto() / 100;
                 if (raavareBatch.getRaavareId() != raavareId)
                     v.commandRM20("Dette råvareBatch er ikke " + raavareNavn,"");
+                else if(raavareTole > raavareBatchDAO.get(raavareId).getMaengde())
+                    v.commandRM20("Der er ikke nok i raavareBatched til at lave produktet", "");
                 else
                     break;
             }
