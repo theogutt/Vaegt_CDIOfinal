@@ -160,15 +160,17 @@ public class WeightController {
 
     private int inputToInt(String input) {
         int num;
+        input = input.replace(" ", "");
         input = input.replace("\"", "");
-        num = Integer.valueOf(input.replace("RM20 A ", ""));
+        num = Integer.valueOf(input.replace("RM20A", ""));
         return num;
     }
 
     private String inputToString(String input) {
         String num;
+        input = input.replace(" ", "");
         input = input.replace("\"", "");
-        num = input.replace("RM20 A ", "");
+        num = input.replace("RM20A", "");
         return num;
     }
     private boolean userExsists(User user) throws SQLException, IDAO.DALException {
