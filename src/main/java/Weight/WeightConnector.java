@@ -42,8 +42,8 @@ public class WeightConnector {
         String input = listen("SS");
         System.out.println();
         input = input.replace("\"", "");
-        input = input.replace("S S     ", "");
-        input = input.replace(" kg", "");
+        input = input.replace("SS", "");
+        input = input.replace("kg", "");
         System.out.println("test: " + input);
         val = Double.valueOf(input);
         return val;
