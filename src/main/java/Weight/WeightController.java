@@ -111,17 +111,9 @@ public class WeightController {
             input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
             ok = inputToString(input);
             if (ok.equals("TRYKOK")||ok.equals("")) {
-                /*
                 while(!ok.equals("cancel=vejigen")){
                     v.commandDW();
                     v.commandRM20(String.valueOf(v.commandS()), "cancel=vej igen");
-                }
-                */
-                while(true) {
-                    v.commandP111(String.valueOf(v.commandS()));
-                    if(ok.equals("TRYKOK")||ok.equals("")){
-                        break;
-                    }
                 }
                 tara = v.commandS();
                 v.commandT();
@@ -193,6 +185,7 @@ public class WeightController {
         produktBatch.setSlutDato(dateFormat.format(date));
         produktBatchDAO.update(produktBatch);
         v.commandRM20("Afvejning udfoert", "");
+        v.callWeight("Q crlf");
     }
 
     private int inputToInt(String input) {
