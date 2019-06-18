@@ -39,6 +39,7 @@ public class WeightController {
         boolean nextStep = false, nextRaastof;
         int raavareBatchId, produktBatchId, brugerId, raavareId;
         double raavareTole;
+        boolean underProduktion = false;
 
         do {
             // Tjekker bruger
@@ -75,7 +76,7 @@ public class WeightController {
                     }
                     else if(produktBatch.getBatchStatus()==1){
                         v.commandRM20("ProduktBatchet er pt.", "under produktion");
-                        nextStep=false;
+                        underProduktion = true;
                     }
                 }
                 else {
@@ -98,9 +99,14 @@ public class WeightController {
         }while(!nextStep);
         recept = receptDAO.get(produktBatch.getReceptId());
         ReceptKomp[] receptKomps = recept.getIndholdsListe();
-
+        int n = 0;
+        if(underProduktion==true){
+            int currently = receptKomps.length;
+            int actually = produktBatchKompDAO.getList(produktBatchId).length;
+            n=currently-actually;
+        }
         // Styrer afvejning
-        for (int i = 0; i < receptKomps.length; i++) {
+        for (int i = n ; i < receptKomps.length; i++) {
             nextRaastof = true;
             // Laver første taraering
             input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
