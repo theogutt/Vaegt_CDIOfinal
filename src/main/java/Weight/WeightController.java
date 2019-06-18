@@ -69,12 +69,14 @@ public class WeightController {
                 produktBatch = produktBatchDAO.get(produktBatchId);
                 if (produktBatchExsists(produktBatch)) {
                     nextStep=true;
-                }
-                else if(produktBatch.getBatchStatus()==2){
-                    v.commandRM20("ProduktBatchet", "er pt. aflsuttet");
-                }
-                else if(produktBatch.getBatchStatus()==1){
-                    v.commandRM20("ProduktBatchet er pt.", "under produktion");
+                    if(produktBatch.getBatchStatus()==2){
+                        v.commandRM20("ProduktBatchet", "er pt. aflsuttet");
+                        nextStep=false;
+                    }
+                    else if(produktBatch.getBatchStatus()==1){
+                        v.commandRM20("ProduktBatchet er pt.", "under produktion");
+                        nextStep=false;
+                    }
                 }
                 else {
                     v.commandRM20("ProduktBatchet", "eksisterer ikke");
@@ -144,7 +146,9 @@ public class WeightController {
 
                 // Laver bruttokontrol
                 v.commandRM20("Fjern brutto", "Tryk ok");
-                brutto = v.commandT();
+                brutto = v.commandS();
+                v.commandT();
+                System.out.println("brutto = "+brutto+"netto = " +netto+"tara = "+tara);
                 if (netto + tara + brutto < 0.01 && netto + tara + brutto > -0.01) {
                     produktBatchKomp = new ProduktBatchKomp(produktBatch.getId(), raavareBatchId, user.getId(), tara, netto);
                     v.commandRM20("Bruttokontrol lykkedes", "Tryk ok");
