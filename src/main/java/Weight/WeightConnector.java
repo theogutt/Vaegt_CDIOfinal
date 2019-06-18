@@ -9,7 +9,9 @@ public class WeightConnector {
     private BufferedReader in;
 
     public WeightConnector() throws Exception {
-        sock = new Socket("169.254.2.2", 8000);
+        final String LOCALHOST = "127.0.0.1";
+        final String VAEGT = "169.254.2.2";
+        sock = new Socket(LOCALHOST, 8000);
         System.out.println("Forbinder til vægt...");
         //out = new PrintWriter(sock.getOutputStream(), true);
         //in = new BufferedReader(new InputStreamReader(sock.getInputStream()));

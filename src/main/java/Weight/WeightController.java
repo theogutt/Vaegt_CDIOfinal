@@ -49,7 +49,8 @@ public class WeightController {
                 nextStep = true;
                 input = v.commandRM20(user.getNavn(),"dit navn? TRYK OK");
                 ok = inputToString(input);
-                if (!ok.equals("ditnavn?TRYKOK")||ok.equals("C")) {
+                if(ok.equals("")){}
+                else if (!ok.equals("ditnavn?TRYKOK")||ok.equals("C")) {
                     v.commandRM20("Proev igen", "");
                     nextStep = false;
                 }
@@ -80,11 +81,11 @@ public class WeightController {
             recept = receptDAO.get(produktBatch.getReceptId());
             input = v.commandRM20(recept.getNavn(), " Skal produceres");
             ok = inputToString(input);
-            if (ok.equals("Skalproduceres")) {
+            if (ok.equals("Skalproduceres")||ok.equals("")) {
                 nextStep=true;
                 produktBatch.setBatchStatus(1);
                 produktBatchDAO.update(produktBatch);
-            } else if (ok.equals("C")) {}
+            } else if (ok.equals("C")||ok.equals("")) {}
         }while(!nextStep);
         recept = receptDAO.get(produktBatch.getReceptId());
         ReceptKomp[] receptKomps = recept.getIndholdsListe();
@@ -95,7 +96,7 @@ public class WeightController {
             // Laver første taraering
             input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
             ok = inputToString(input);
-            if (ok.equals("TRYKOK")) {
+            if (ok.equals("TRYKOK")||ok.equals("")) {
                 /*
                 while(!ok.equals("cancel=vejigen")){
                     v.commandDW();
