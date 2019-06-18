@@ -69,7 +69,14 @@ public class WeightController {
                 produktBatch = produktBatchDAO.get(produktBatchId);
                 if (produktBatchExsists(produktBatch)) {
                     nextStep=true;
-                } else {
+                }
+                else if(produktBatch.getBatchStatus()==2){
+                    v.commandRM20("ProduktBatchet", "er pt. aflsuttet");
+                }
+                else if(produktBatch.getBatchStatus()==1){
+                    v.commandRM20("ProduktBatchet er pt.", "under produktion");
+                }
+                else {
                     v.commandRM20("ProduktBatchet", "eksisterer ikke");
                 }
             }while(!nextStep);
