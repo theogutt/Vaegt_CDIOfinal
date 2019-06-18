@@ -102,7 +102,9 @@ public class WeightController {
         int n = 0;
         if(underProduktion==true){
             int currently = receptKomps.length;
+            System.out.println(currently);
             int actually = produktBatchKompDAO.getList(produktBatchId).length;
+            System.out.println(actually);
             n=currently-actually;
         }
         // Styrer afvejning
