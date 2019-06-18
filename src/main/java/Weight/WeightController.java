@@ -115,6 +115,9 @@ public class WeightController {
                 while(!ok.equals("cancel=vejigen")||!ok.equals("")){
                     v.commandDW();
                     v.commandRM20(String.valueOf(v.commandS()), "cancel=vej igen");
+                    if(ok.equals("cancel=vejigen")){
+                        break;
+                    }
                 }
 
                 tara = v.commandS();
@@ -143,6 +146,9 @@ public class WeightController {
                 while(!ok.equals("cancel=vejigen")||!ok.equals("")){
                     v.commandDW();
                     v.commandRM20(String.valueOf(v.commandS()), "cancel=vej igen");
+                    if(ok.equals("cancel=vejigen")){
+                        break;
+                    }
                 }
                 netto = v.commandS();
                 v.commandT();
