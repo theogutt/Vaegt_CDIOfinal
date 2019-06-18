@@ -117,6 +117,10 @@ public class WeightController {
                     v.commandRM20(String.valueOf(v.commandS()), "cancel=vej igen");
                 }
                 */
+                input = v.commandRM20("TRYK OK", "FOR AT VEJE");
+                while(ok.equals("FORATVEJE")||ok.equals("")){
+                    v.commandDW();
+                }
                 tara = v.commandS();
                 v.commandT();
             }
