@@ -9,13 +9,13 @@ public class WeightConnector {
     private BufferedReader in;
 
     public WeightConnector() throws Exception {
-        sock = new Socket("127.0.0.1", 8000);
+        sock = new Socket("169.254.2.2", 8000);
         System.out.println("Forbinder til vægt...");
         //out = new PrintWriter(sock.getOutputStream(), true);
         //in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
     }
 
-    private void callWeight(String command) throws IOException {
+    public void callWeight(String command) throws IOException {
         out = new PrintWriter(sock.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
@@ -36,9 +36,9 @@ public class WeightConnector {
 
 
     // Viser vægt i kg
-    public Double commandS() throws IOException {
+    public double commandS() throws IOException {
         double val;
-        SCallWeight("S crlf");
+        SCallWeight("S");
         String input = listen("SS");
         System.out.println();
         input = input.replace("\"", "");
@@ -50,8 +50,17 @@ public class WeightConnector {
     }
 
     // Tarerer vægten
-    public void commandT() throws IOException {
-        callWeight("T crlf");
+    public double commandT() throws IOException {
+        double val;
+        SCallWeight("T");
+        String input = listen("TS");
+        System.out.println();
+        input = input.replace("\"", "");
+        input = input.replace("TS", "");
+        input = input.replace("kg", "");
+        System.out.println("test: " + input);
+        val = Double.valueOf(input);
+        return val;
     }
 
     // Skriver "output" i displayet
@@ -74,8 +83,8 @@ public class WeightConnector {
 
     // Skriver "output" og "output2" i to displays og venter på inputs
     public String commandRM20(String output1, String output2) throws IOException {
-        callWeight("RM20 8 \"" + output1 + "\" \"" + output2 + "\" \"&3\"" + " crlf");
-        String input = listen("RM20A");
+        callWeight("RM20 8 \"" + output1 + "\" \"" + output2 + "\" \"&3\"");
+        String input = listen("RM20A","RM20C");
         System.out.println(input);
 
         return input;
@@ -84,8 +93,36 @@ public class WeightConnector {
         String input;
         while (true) {
             input = in.readLine();
+            System.out.println(input);
             input = input.replace(" ", "");
             if (input.contains(lookingFor)) {
+                return input;
+            }
+        }
+    }
+    public boolean listenB(String lookingFor) throws IOException {
+        String input;
+        boolean found;
+        while (true) {
+            input = in.readLine();
+            System.out.println(input);
+            input = input.replace(" ", "");
+            if (input.contains(lookingFor)) {
+                found = true;
+                return found;
+            }
+        }
+    }
+    public String listen(String lookingFor, String Else) throws IOException {
+        String input;
+        while (true) {
+            input = in.readLine();
+            System.out.println(input);
+            input = input.replace(" ", "");
+            if (input.contains(lookingFor)) {
+                return input;
+            }
+            else if(input.contains(Else)){
                 return input;
             }
         }
