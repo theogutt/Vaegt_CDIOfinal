@@ -184,6 +184,7 @@ public class WeightController {
     }
 
     private int inputToInt(String input) {
+        if(input.equals("")){return -1;}
         int num;
         input = input.replace(" ", "");
         input = input.replace("\"", "");
