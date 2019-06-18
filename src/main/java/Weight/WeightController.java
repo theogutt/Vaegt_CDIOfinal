@@ -102,6 +102,7 @@ public class WeightController {
         int n = 0;
         if(underProduktion==true){
             n = produktBatchKompDAO.getList(produktBatchId).length;
+            System.out.println("n="+n);
         }
         // Styrer afvejning
         for (int i = n ; i < receptKomps.length; i++) {
@@ -116,7 +117,8 @@ public class WeightController {
                     v.commandRM20(String.valueOf(v.commandS()), "cancel=vej igen");
                 }
                 */
-                tara = v.commandT();
+                tara = v.commandS();
+                v.commandT();
             }
 
             // Setter råvarebatch, og starter afvejning
@@ -137,7 +139,7 @@ public class WeightController {
             }
             input = v.commandRM20("PLACER NETTO i form af", raavareNavn);
             ok = inputToString(input);
-            if (ok.equals(raavareNavn)) {
+            if (ok.equals(raavareNavn)||ok.equals("")) {
                 netto = v.commandS();
                 v.commandT();
             }
