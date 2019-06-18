@@ -118,7 +118,7 @@ public class WeightController {
                 }
                 */
                 while(true) {
-                    v.commandRM20(String.valueOf(v.commandS()), "TRYK OK");
+                    v.commandP111(String.valueOf(v.commandS()));
                     if(ok.equals("TRYKOK")||ok.equals("")){
                         break;
                     }
