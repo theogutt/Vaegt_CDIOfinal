@@ -114,7 +114,8 @@ public class WeightController {
 
                 while(true){
                     v.commandDW();
-                    v.commandRM20(String.valueOf(v.commandS()), "cancel=vej igen");
+                    input = v.commandRM20(String.valueOf(v.commandS()), "cancel=vej igen");
+                    ok=inputToString(input);
                     if(ok.equals("cancel=vejigen")||ok.equals("")){
                         break;
                     }
@@ -145,7 +146,8 @@ public class WeightController {
             if (ok.equals(raavareNavn)||ok.equals("")) {
                 while(true){
                     v.commandDW();
-                    v.commandRM20(String.valueOf(v.commandS()), "cancel=vej igen");
+                    input = v.commandRM20(String.valueOf(v.commandS()), "cancel=vej igen");
+                    ok=inputToString(input);
                     if(ok.equals("cancel=vejigen")||ok.equals("")){
                         break;
                     }
