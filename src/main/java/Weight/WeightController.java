@@ -105,7 +105,8 @@ public class WeightController {
             System.out.println(currently);
             int actually = produktBatchKompDAO.getList(produktBatchId).length;
             System.out.println(actually);
-            n=currently-actually;
+            n=currently-actually - 1;
+            System.out.println(n);
         }
         // Styrer afvejning
         for (int i = n ; i < receptKomps.length; i++) {
