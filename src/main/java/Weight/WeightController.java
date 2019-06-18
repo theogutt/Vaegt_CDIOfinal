@@ -111,10 +111,12 @@ public class WeightController {
             input = v.commandRM20("PLACER BEHOLDER", "TRYK OK");
             ok = inputToString(input);
             if (ok.equals("TRYKOK")||ok.equals("")) {
-                while(!ok.equals("cancel=vejigen")){
+
+                while(!ok.equals("cancel=vejigen")||!ok.equals("")){
                     v.commandDW();
                     v.commandRM20(String.valueOf(v.commandS()), "cancel=vej igen");
                 }
+
                 tara = v.commandS();
                 v.commandT();
             }
@@ -138,6 +140,10 @@ public class WeightController {
             input = v.commandRM20("PLACER NETTO i form af", raavareNavn);
             ok = inputToString(input);
             if (ok.equals(raavareNavn)||ok.equals("")) {
+                while(!ok.equals("cancel=vejigen")||!ok.equals("")){
+                    v.commandDW();
+                    v.commandRM20(String.valueOf(v.commandS()), "cancel=vej igen");
+                }
                 netto = v.commandS();
                 v.commandT();
             }
