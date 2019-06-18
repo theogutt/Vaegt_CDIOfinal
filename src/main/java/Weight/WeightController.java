@@ -101,12 +101,7 @@ public class WeightController {
         ReceptKomp[] receptKomps = recept.getIndholdsListe();
         int n = 0;
         if(underProduktion==true){
-            int currently = receptKomps.length;
-            System.out.println(currently);
-            int actually = produktBatchKompDAO.getList(produktBatchId).length;
-            System.out.println(actually);
-            n=currently-actually - 1;
-            System.out.println(n);
+            n = produktBatchKompDAO.getList(produktBatchId).length;
         }
         // Styrer afvejning
         for (int i = n ; i < receptKomps.length; i++) {
