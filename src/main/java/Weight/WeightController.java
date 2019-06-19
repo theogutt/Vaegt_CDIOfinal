@@ -120,7 +120,6 @@ public class WeightController {
                         break;
                     }
                 }
-
                 tara = v.commandS();
                 v.commandT();
             }
