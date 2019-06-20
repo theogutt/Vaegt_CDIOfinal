@@ -203,8 +203,8 @@ public class WeightController {
     }
 
     private int inputToInt(String input) {
-        if(input.equals("RM20A\"\"")){return -1;}
-        if(input.equals("RM20C")){return -1;}
+        if(input.equals("RM20A\"\"")){return -99;}
+        if(input.equals("RM20C")){return -99;}
         int num;
         input = input.replace(" ", "");
         input = input.replace("\"", "");
