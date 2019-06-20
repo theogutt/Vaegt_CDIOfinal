@@ -64,17 +64,18 @@ public class WeightConnector {
         val = Double.valueOf(input);
         return val;
     }
-
+    /*
     // Skriver "output" i displayet
     public void commandD(String output) throws IOException {
         callWeight("D " + "\"" + output + "\"" + " crlf");
     }
+    */
 
     // Viser vægten igen (bruges efter der er skrevet et output i displayet)
     public void commandDW() throws IOException {
         callWeight("DW crlf");
     }
-
+    /*
     // Skriver "output" i et andet display
     public void commandP111(String output) throws IOException {
         if (output.length() <= 30)
@@ -82,6 +83,7 @@ public class WeightConnector {
         else
             System.out.println("FEJL, for langt output");
     }
+    */
 
     // Skriver "output" og "output2" i to displays og venter på inputs
     public String commandRM20(String output1, String output2) throws IOException {
@@ -102,6 +104,7 @@ public class WeightConnector {
             }
         }
     }
+    /*
     public boolean listenB(String lookingFor) throws IOException {
         String input;
         boolean found;
@@ -115,6 +118,7 @@ public class WeightConnector {
             }
         }
     }
+    */
     public String listen(String lookingFor, String Else) throws IOException {
         String input;
         while (true) {
