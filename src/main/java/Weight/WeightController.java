@@ -231,7 +231,7 @@ public class WeightController {
         boolean result = false;
         User[] array = userDAO.getList();
         for (User currUser : array){
-            if(user.getId() == currUser.getId()){
+            if(user.getId() == currUser.getId()&&currUser.isAktiv()==true){
                 result = true;
                 break;
             }
