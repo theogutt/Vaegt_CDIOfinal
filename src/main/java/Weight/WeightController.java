@@ -131,15 +131,22 @@ public class WeightController {
                 v.commandRM20("hent", raavareNavn);
                 while (true) {
                     input = v.commandRM20("skriv RBnr for", raavareNavn);
-                    raavareBatchId = inputToInt(input);
-                    raavareBatch = raavareBatchDAO.get(raavareBatchId);
-                    raavareTole = (100.0 - receptKomps[i].getTolerance()) * receptKomps[i].getNonNetto() / 100;
-                    if (raavareBatch.getRaavareId() != raavareId)
-                        v.commandRM20("RB er ikke ", raavareNavn);
-                    else if (raavareTole > raavareBatchDAO.get(raavareId).getMaengde())
-                        v.commandRM20("for lidt RB", "til produktet");
-                    else
-                        break;
+                    System.out.println(input);
+                    if(!input.equals("")||!input.equals(raavareNavn)||!input.equals("RM20 A \""+raavareNavn+"\"")||!input.equals("RM20A\""+raavareNavn+"\"")) {
+                        raavareBatchId = inputToInt(input);
+                        System.out.println(raavareBatchId);
+                        raavareBatch = raavareBatchDAO.get(raavareBatchId);
+                        raavareTole = (100.0 - receptKomps[i].getTolerance()) * receptKomps[i].getNonNetto() / 100;
+                        if (raavareBatch.getRaavareId() != raavareId)
+                            v.commandRM20("RB er ikke ", raavareNavn);
+                        else if (raavareTole > raavareBatchDAO.get(raavareId).getMaengde())
+                            v.commandRM20("for lidt RB", "til produktet");
+                        else{
+                            break;
+                        }
+                    }
+                    else{
+                    }
                 }
                 input = v.commandRM20("PLACER NETTO i form af", raavareNavn);
                 ok = inputToString(input);

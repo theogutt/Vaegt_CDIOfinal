@@ -13,26 +13,20 @@ public class WeightConnector {
         final String VAEGT = "169.254.2.3" ;
         sock = new Socket(LOCALHOST, 8000);
         System.out.println("Forbinder til vægt...");
-        //out = new PrintWriter(sock.getOutputStream(), true);
-        //in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
     }
 
     public void callWeight(String command) throws IOException {
         out = new PrintWriter(sock.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-
         out.println(command);
         System.out.println(command);
-
         System.out.println(in.readLine());
-
         System.out.println();
     }
 
     private void SCallWeight(String command) throws IOException {
         out = new PrintWriter(sock.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-
         out.println(command);
     }
 
