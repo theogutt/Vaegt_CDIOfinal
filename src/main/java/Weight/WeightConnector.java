@@ -11,7 +11,7 @@ public class WeightConnector {
     public WeightConnector() throws Exception {
         final String LOCALHOST = "127.0.0.1";
         final String VAEGT = "169.254.2.3" ;
-        sock = new Socket(LOCALHOST, 8000);
+        sock = new Socket(VAEGT, 8000);
         System.out.println("Forbinder til vægt...");
     }
 
